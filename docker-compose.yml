@@ -1,0 +1,54 @@
+version: '3'
+networks:
+  taxter:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
+services:
+  proxy:
+    image: lerenn/nginx-reverse-proxy
+    volumes:
+      - ./Dockerdata/certificates/:/etc/nginx/certificates/
+      - ./Dockerdata/sites-enabled/:/etc/nginx/sites-enabled/
+    ports:
+      - '80:80'
+      - '443:443'
+    networks:
+      taxter:
+        ipv4_address: 192.168.0.18
+    extra_hosts:
+      - 'taxter:192.168.0.19'
+  mysql:
+    image: mysql
+    env_file:
+      - ./.env
+    volumes:
+      - ./Dockerdata/mysql-conf.d/:/etc/mysql/conf.d/
+      - ./data/:/var/lib/mysql/
+      - ./Dockerdata/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+    ports:
+      - '3306:3306'
+    networks:
+      taxter:
+        ipv4_address: 192.168.0.21
+  taxter:
+    build: .
+    env_file:
+      - ./.env
+    volumes:
+      - ./log/:/var/log/taxter/
+      - ./src/:/srv/docker-app/
+    ports:
+      - '8080:80'
+    depends_on:
+      - proxy
+      - mysql
+    networks:
+      taxter:
+        ipv4_address: 192.168.0.19
+    extra_hosts:
+      - 'mysql:192.168.0.21'

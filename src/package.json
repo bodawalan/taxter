@@ -1,0 +1,27 @@
+{
+  "name": "src",
+  "version": "0.0.1",
+  "private": true,
+  "description": "New Swagger API Project",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.js",
+  "dependencies": {
+    "connect": "^3.3.5",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.2",
+    "mysql2": "^1.5.1",
+    "request": "^2.85.0",
+    "swagger": "^0.7.5",
+    "swagger-connect": "^0.1.0"
+  },
+  "devDependencies": {
+    "should": "^7.1.0",
+    "supertest": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "swagger project test"
+  }
+}
